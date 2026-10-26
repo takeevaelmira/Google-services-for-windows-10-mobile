@@ -273,22 +273,22 @@
         <h3 style="color: #8ab4f8; margin-bottom: 16px;">Отзывы</h3>
         <div id="reviewsList"></div>
         <div id="addReviewContainer" class="add-review-box" style="display: none;">
-            <h4 style="margin: 0 0 10px 0; font-size: 15px;">Оставить отзыв</h4>
-            <form onsubmit="submitReview(event)">
-                <div style="margin-bottom: 10px;">
-                    <label style="font-size: 13px; color: #9aa0a6; display: block; margin-bottom: 4px;">Оценка (звёзд):</label>
-                    <select id="reviewRating" class="auth-input" style="margin-bottom: 0;">
-                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                        <option value="4">⭐⭐⭐⭐ (4)</option>
-                        <option value="3">⭐⭐⭐ (3)</option>
-                        <option value="2">⭐⭐ (2)</option>
-                        <option value="1">⭐ (1)</option>
-                    </select>
-                </div>
-                <textarea id="reviewComment" class="auth-input" placeholder="Ваш комментарий..." rows="3" required style="resize: none;"></textarea>
-                <button type="submit" class="auth-submit-btn">Отправить отзыв</button>
-            </form>
+        <h4 style="margin: 0 0 10px 0; font-size: 15px;">Оставить отзыв</h4>
+        <div>
+            <div style="margin-bottom: 10px;">
+                <label style="font-size: 13px; color: #9aa0a6; display: block; margin-bottom: 4px;">Оценка (звёзд):</label>
+                <select id="reviewRating" class="auth-input" style="margin-bottom: 0;">
+                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4)</option>
+                    <option value="3">⭐⭐⭐ (3)</option>
+                    <option value="2">⭐⭐ (2)</option>
+                    <option value="1">⭐ (1)</option>
+                </select>
+            </div>
+            <textarea id="reviewComment" class="auth-input" placeholder="Ваш комментарий..." rows="3" style="resize: none;"></textarea>
+            <button type="button" class="auth-submit-btn" onclick="submitReviewClick()">Отправить отзыв</button>
         </div>
+    </div>
         <div id="loginRequiredMsg" style="text-align: center; color: #9aa0a6; font-size: 14px; padding: 12px; background-color: #202124; border-radius: 12px; border: 1px solid #3c4043;">
             Чтобы писать отзывы, <a href="javascript:void(0)" onclick="openAuthModal()" style="color: #8ab4f8;">войдите в аккаунт</a>.
         </div>
