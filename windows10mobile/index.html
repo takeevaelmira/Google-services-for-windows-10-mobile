@@ -12,43 +12,65 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 16px;
-            position: relative;
         }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 16px;
-            color: #8ab4f8;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .search-container {
-            position: relative;
+
+        /* Верхняя панель: кнопка «Назад», поиск и аватарка на одной линии */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 20px;
             width: 100%;
-            padding-right: 50px;
             box-sizing: border-box;
         }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #202124;
+            border: 1px solid #3c4043;
+            border-radius: 50%;
+            color: #8ab4f8;
+            text-decoration: none;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .back-link:active {
+            background-color: #3c4043;
+        }
+
+        .search-container {
+            position: relative;
+            flex-grow: 1;
+        }
+
         #appSearchInput {
             width: 100%;
             box-sizing: border-box;
-            padding: 12px 16px;
+            height: 40px;
+            padding: 0 16px;
             font-size: 15px;
             background-color: #202124;
             border: 1px solid #3c4043;
-            border-radius: 24px;
+            border-radius: 20px;
             color: #e8eaed;
             outline: none;
             -webkit-appearance: none;
         }
+
         #appSearchInput:focus {
             border-color: #8ab4f8;
         }
+
         .suggestions-list {
             display: none;
             position: absolute;
             top: 100%;
             left: 0;
-            right: 50px;
+            right: 0;
             background-color: #28292c;
             border: 1px solid #3c4043;
             border-radius: 12px;
@@ -58,6 +80,7 @@
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
+
         .suggestion-item {
             display: block;
             padding: 10px 14px;
@@ -68,13 +91,26 @@
         }
         .suggestion-item:last-child { border-bottom: none; }
         .suggestion-item:active { background-color: #3c4043; }
+
         .suggestion-icon {
             width: 32px; height: 32px; border-radius: 6px; float: left; margin-right: 12px;
             background-size: contain; background-repeat: no-repeat; background-position: center;
         }
         .suggestion-title { font-size: 15px; font-weight: 500; line-height: 32px; }
+
+        /* Переопределяем кнопку входа в общих стилях, чтобы она встала в flex-контейнер */
+        .user-auth-container {
+            position: static !important;
+            flex-shrink: 0;
+        }
+        .auth-icon-btn {
+            width: 40px !important;
+            height: 40px !important;
+        }
+
         .site-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #9aa0a6; margin-bottom: 4px; letter-spacing: 0.5px; padding-left: 8px; }
         .site-subtitle { font-size: 26px; margin-top: 0; margin-bottom: 20px; font-weight: 600; color: #8ab4f8; padding-left: 8px; }
+        
         .slider-wrapper { position: relative; width: 100%; height: 140px; overflow: hidden; margin-bottom: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .slider-container { position: relative; width: 100%; height: 100%; white-space: nowrap; font-size: 0; }
         .tile-banner { display: inline-block; width: 100%; height: 100%; box-sizing: border-box; background-color: #202124; color: #e8eaed; vertical-align: top; white-space: normal; }
@@ -87,6 +123,7 @@
         .slider-nav { position: absolute; left: 108px; bottom: 14px; z-index: 10; }
         .slider-dot { display: inline-block; width: 8px; height: 8px; margin-right: 6px; background-color: #3c4043; border-radius: 50%; cursor: pointer; }
         .slider-dot.active { background-color: #8ab4f8; width: 18px; border-radius: 4px; }
+
         .apps-section { margin-top: 24px; }
         .section-title { font-size: 18px; font-weight: 600; color: #e8eaed; margin-bottom: 12px; padding-left: 4px; }
         .apps-grid { font-size: 0; }
@@ -101,12 +138,21 @@
 </head>
 <body>
 
-    <!-- Кнопка входа в правом верхнем углу -->
-    <div class="user-auth-container">
-        <div id="authTriggerBtn" class="auth-icon-btn" onclick="openAuthModal()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#e8eaed">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
+    <!-- Единая верхняя панель: Кнопка «Назад» + Поиск + Аватарка в ряд -->
+    <div class="top-bar">
+        <a href="../" class="back-link" title="Back to selection">&#8592;</a>
+        
+        <div class="search-container">
+            <input type="text" id="appSearchInput" placeholder="Search apps..." autocomplete="off">
+            <div id="searchSuggestions" class="suggestions-list"></div>
+        </div>
+
+        <div class="user-auth-container">
+            <div id="authTriggerBtn" class="auth-icon-btn" onclick="openAuthModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#e8eaed">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+            </div>
         </div>
     </div>
 
@@ -151,13 +197,6 @@
             <p id="viewEmail" style="color: #9aa0a6; font-size: 13px; margin: 0 0 20px 0;"></p>
             <button class="auth-submit-btn" style="background-color: #3c4043; color: #e8eaed;" onclick="closeUserProfileModal()">Назад</button>
         </div>
-    </div>
-
-
-    <div class="search-container">
-        <a href="../" class="back-link">&#8592; Back</a>
-        <input type="text" id="appSearchInput" placeholder="Search apps..." autocomplete="off">
-        <div id="searchSuggestions" class="suggestions-list"></div>
     </div>
 
     <div class="site-title">Google Services</div>
@@ -219,7 +258,7 @@
         </div>
     </div>
 
-    <!-- Firebase v8 Compat SDK (Совместимо с EdgeHTML) -->
+    <!-- Firebase v8 Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -287,6 +326,81 @@
             wrapper.addEventListener('mouseup', handleEnd, false);
         }
         resetTimer();
+
+        var appsData = [
+            {
+                name: 'Google Translate',
+                url: './google-translate.html',
+                icon: 'https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google_Translate_icon.png'
+            },
+            {
+                name: 'Google Drive',
+                url: './google-drive.html',
+                icon: 'https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google_Drive_icon.png'
+            },
+            {
+                name: 'Google Maps',
+                url: '#',
+                icon: 'https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windiws-10-mobile/refs/heads/main/Google_Maps_icon.png'
+            }
+        ];
+
+        var searchInput = document.getElementById('appSearchInput');
+        var suggestionsBox = document.getElementById('searchSuggestions');
+
+        function filterApps() {
+            var query = searchInput.value.replace(/^\s+|\s+$/g, '').toLowerCase();
+            suggestionsBox.innerHTML = '';
+            if (query.length === 0) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+            var matches = [];
+            for (var i = 0; i < appsData.length; i++) {
+                if (appsData[i].name.toLowerCase().indexOf(query) !== -1) {
+                    matches.push(appsData[i]);
+                }
+            }
+            if (matches.length > 0) {
+                for (var j = 0; j < matches.length; j++) {
+                    (function(app) {
+                        var item = document.createElement('a');
+                        item.className = 'suggestion-item';
+                        item.href = (app.url && app.url !== '#') ? app.url : 'javascript:void(0);';
+                        item.innerHTML = 
+                            '<div class="suggestion-icon" style="background-image: url(\'' + app.icon + '\');"></div>' +
+                            '<div class="suggestion-title">' + app.name + '</div>' +
+                            '<div class="clear"></div>';
+                        item.onclick = function(e) {
+                            if (!app.url || app.url === '#') {
+                                if (e && e.preventDefault) e.preventDefault();
+                                return false;
+                            }
+                            suggestionsBox.style.display = 'none';
+                        };
+                        suggestionsBox.appendChild(item);
+                    })(matches[j]);
+                }
+                suggestionsBox.style.display = 'block';
+            } else {
+                suggestionsBox.style.display = 'none';
+            }
+        }
+
+        if (searchInput.addEventListener) {
+            searchInput.addEventListener('input', filterApps, false);
+            searchInput.addEventListener('keyup', filterApps, false);
+        } else if (searchInput.attachEvent) {
+            searchInput.attachEvent('onkeyup', filterApps);
+        }
+
+        var clickEvent = ('ontouchstart' in window) ? 'touchstart' : 'click';
+        document.addEventListener(clickEvent, function(e) {
+            var target = e.target || e.srcElement;
+            if (target !== searchInput && !suggestionsBox.contains(target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        }, false);
     </script>
 </body>
 </html>
