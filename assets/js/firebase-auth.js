@@ -9,30 +9,30 @@ var firebaseConfig = {
     measurementId: "G-MFTCVNR56D"
 };
 
-// Инициализация Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 var auth = firebase.auth();
 var db = firebase.firestore();
 
-// Управление вкладками входа/регистрации
 function switchAuthTab(tab) {
     var loginForm = document.getElementById('loginForm');
     var registerForm = document.getElementById('registerForm');
     var tabLogin = document.getElementById('tabLogin');
     var tabRegister = document.getElementById('tabRegister');
 
+    if (!loginForm || !registerForm) return;
+
     if (tab === 'login') {
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
-        tabLogin.className = 'auth-tab active';
-        tabRegister.className = 'auth-tab';
+        if (tabLogin) tabLogin.className = 'auth-tab active';
+        if (tabRegister) tabRegister.className = 'auth-tab';
     } else {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
-        tabLogin.className = 'auth-tab';
-        tabRegister.className = 'auth-tab active';
+        if (tabLogin) tabLogin.className = 'auth-tab';
+        if (tabRegister) tabRegister.className = 'auth-tab active';
     }
 }
 
@@ -46,7 +46,6 @@ function closeAuthModal() {
     if (modal) modal.style.display = 'none';
 }
 
-// Отслеживание состояния авторизации
 auth.onAuthStateChanged(function(user) {
     var triggerBtn = document.getElementById('authTriggerBtn');
     var loggedOutView = document.getElementById('loggedOutView');
@@ -86,9 +85,8 @@ auth.onAuthStateChanged(function(user) {
     }
 });
 
-// Регистрация (адаптировано для старого Edge)
-function handleRegister(e) {
-    if (e && e.preventDefault) e.preventDefault();
+// Регистрация без использования объекта event
+function handleRegisterClick() {
     var nameInput = document.getElementById('regName');
     var emailInput = document.getElementById('regEmail');
     var passwordInput = document.getElementById('regPassword');
@@ -98,6 +96,11 @@ function handleRegister(e) {
     var name = nameInput.value;
     var email = emailInput.value;
     var password = passwordInput.value;
+
+    if (!email || !password) {
+        alert('Заполните все поля');
+        return;
+    }
 
     auth.createUserWithEmailAndPassword(email, password).then(function(credential) {
         if (credential && credential.user) {
@@ -112,12 +115,10 @@ function handleRegister(e) {
     }).catch(function(error) {
         alert('Ошибка регистрации: ' + (error.message || error));
     });
-    return false;
 }
 
-// Вход (адаптировано для старого Edge)
-function handleLogin(e) {
-    if (e && e.preventDefault) e.preventDefault();
+// Вход без использования объекта event
+function handleLoginClick() {
     var emailInput = document.getElementById('loginEmail');
     var passwordInput = document.getElementById('loginPassword');
 
@@ -126,15 +127,18 @@ function handleLogin(e) {
     var email = emailInput.value;
     var password = passwordInput.value;
 
+    if (!email || !password) {
+        alert('Заполните все поля');
+        return;
+    }
+
     auth.signInWithEmailAndPassword(email, password).then(function() {
         closeAuthModal();
     }).catch(function(error) {
         alert('Ошибка входа: ' + (error.message || error));
     });
-    return false;
 }
 
-// Выход
 function handleLogout() {
     auth.signOut().then(function() {
         closeAuthModal();
@@ -143,21 +147,26 @@ function handleLogout() {
     });
 }
 
-// Отправка отзыва в Firestore
-function submitReview(e) {
-    if (e && e.preventDefault) e.preventDefault();
+// Отправка отзыва
+function submitReviewClick() {
     var user = auth.currentUser;
     if (!user) {
         alert('Пожалуйста, войдите в аккаунт');
-        return false;
+        return;
     }
 
     var ratingSelect = document.getElementById('reviewRating');
     var commentInput = document.getElementById('reviewComment');
-    if (!ratingSelect || !commentInput) return false;
+    if (!ratingSelect || !commentInput) return;
 
     var rating = parseInt(ratingSelect.value, 10);
     var comment = commentInput.value;
+    
+    if (!comment) {
+        alert('Напишите комментарий');
+        return;
+    }
+
     var name = user.displayName || user.email.split('@')[0];
 
     db.collection('reviews').add({
@@ -173,10 +182,8 @@ function submitReview(e) {
     }).catch(function(error) {
         alert('Ошибка отправки отзыва: ' + (error.message || error));
     });
-    return false;
 }
 
-// Загрузка отзывов из Firestore
 function loadReviews() {
     var listContainer = document.getElementById('reviewsList');
     if (!listContainer) return;
@@ -217,7 +224,6 @@ function loadReviews() {
     });
 }
 
-// Просмотр профиля другого пользователя
 function openUserProfile(encName, encEmail) {
     var name = decodeURIComponent(encName);
     var email = decodeURIComponent(encEmail);
@@ -245,7 +251,6 @@ function escapeHtml(text) {
     return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-// Автозагрузка при старте страницы
 window.onload = function() {
     if (typeof originalWindowOnload === 'function') {
         originalWindowOnload();
