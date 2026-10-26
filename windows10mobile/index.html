@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Google Services - Windows 10 Mobile</title>
+    <link rel="stylesheet" href="../assets/css/auth-reviews.css">
     <style type="text/css">
         body {
             background-color: #121212;
@@ -11,6 +12,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 16px;
+            position: relative;
         }
         .back-link {
             display: inline-block;
@@ -19,13 +21,13 @@
             text-decoration: none;
             font-size: 14px;
         }
-
         .search-container {
             position: relative;
             margin-bottom: 20px;
             width: 100%;
+            padding-right: 50px;
+            box-sizing: border-box;
         }
-
         #appSearchInput {
             width: 100%;
             box-sizing: border-box;
@@ -38,17 +40,15 @@
             outline: none;
             -webkit-appearance: none;
         }
-
         #appSearchInput:focus {
             border-color: #8ab4f8;
         }
-
         .suggestions-list {
             display: none;
             position: absolute;
             top: 100%;
             left: 0;
-            right: 0;
+            right: 50px;
             background-color: #28292c;
             border: 1px solid #3c4043;
             border-radius: 12px;
@@ -58,7 +58,6 @@
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
-
         .suggestion-item {
             display: block;
             padding: 10px 14px;
@@ -67,15 +66,12 @@
             color: #e8eaed;
             border-bottom: 1px solid #323639;
         }
-
         .suggestion-item:last-child {
             border-bottom: none;
         }
-
         .suggestion-item:active {
             background-color: #3c4043;
         }
-
         .suggestion-icon {
             width: 32px;
             height: 32px;
@@ -86,13 +82,11 @@
             background-repeat: no-repeat;
             background-position: center;
         }
-
         .suggestion-title {
             font-size: 15px;
             font-weight: 500;
             line-height: 32px;
         }
-
         .site-title {
             font-size: 13px;
             font-weight: 700;
@@ -190,7 +184,6 @@
             width: 18px;
             border-radius: 4px;
         }
-
         .apps-section {
             margin-top: 24px;
         }
@@ -257,6 +250,58 @@
 </head>
 <body>
 
+    <!-- Кнопка входа в правом верхнем углу -->
+    <div class="user-auth-container">
+        <div id="authTriggerBtn" class="auth-icon-btn" onclick="openAuthModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#e8eaed">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации / профиля -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
+            <div id="loggedOutView">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
+                    <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email" required>
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль" required>
+                    <button type="submit" class="auth-submit-btn">Войти</button>
+                </form>
+                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                    <input type="text" id="regName" class="auth-input" placeholder="Имя" required>
+                    <input type="email" id="regEmail" class="auth-input" placeholder="Email" required>
+                    <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)" required>
+                    <button type="submit" class="auth-submit-btn">Зарегистрироваться</button>
+                </form>
+            </div>
+            <div id="loggedInView" style="display: none; text-align: center;">
+                <div id="profileAvatarBig" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
+                <h3 id="profileName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
+                <p id="profileEmail" style="color: #9aa0a6; font-size: 13px; margin: 0 0 20px 0;"></p>
+                <button class="auth-submit-btn" style="background-color: #3c4043; color: #e8eaed; margin-bottom: 10px;" onclick="closeAuthModal()">Назад</button>
+                <br>
+                <button onclick="handleLogout()" style="background: none; border: none; color: #f28b82; cursor: pointer; font-size: 14px;">Выйти из аккаунта</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра чужого профиля -->
+    <div id="userProfileModal" class="auth-modal">
+        <div class="auth-modal-content" style="text-align: center;">
+            <button class="auth-close-btn" onclick="closeUserProfileModal()">&times;</button>
+            <div id="viewAvatar" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
+            <h3 id="viewName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
+            <p id="viewEmail" style="color: #9aa0a6; font-size: 13px; margin: 0 0 20px 0;"></p>
+            <button class="auth-submit-btn" style="background-color: #3c4043; color: #e8eaed;" onclick="closeUserProfileModal()">Назад</button>
+        </div>
+    </div>
+
     <a href="../" class="back-link">&#8592; Back to selection</a>
 
     <div class="search-container">
@@ -269,7 +314,6 @@
 
     <div class="slider-wrapper" id="sliderWrapper">
         <div class="slider-container" id="sliderContainer">
-            
             <div class="tile-banner">
                 <table class="tile-table">
                     <tr>
@@ -283,7 +327,6 @@
                     </tr>
                 </table>
             </div>
-
             <div class="tile-banner">
                 <table class="tile-table">
                     <tr>
@@ -297,9 +340,7 @@
                     </tr>
                 </table>
             </div>
-
         </div>
-
         <div class="slider-nav" id="sliderNav">
             <span class="slider-dot active" onclick="goToSlide(0)"></span>
             <span class="slider-dot" onclick="goToSlide(1)"></span>
@@ -308,20 +349,17 @@
 
     <div class="apps-section">
         <div class="section-title">Apps</div>
-
         <div class="apps-grid">
             <a href="./google-translate.html" class="app-card-square">
                 <div class="app-icon-square" style="background-image: url('https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google_Translate_icon.png');"></div>
                 <div class="app-name-square">Google Translate</div>
                 <div class="app-version-square">Version 1.1.0</div>
             </a>
-
             <a href="./google-drive.html" class="app-card-square">
                 <div class="app-icon-square" style="background-image: url('https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google_Drive_icon.png');"></div>
                 <div class="app-name-square">Google Drive</div>
                 <div class="app-version-square">Version 1.0.4</div>
             </a>
-
             <div class="app-card-square disabled">
                 <div class="app-icon-square" style="background-image: url('https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windiws-10-mobile/refs/heads/main/Google_Maps_icon.png');"></div>
                 <div class="app-name-square">Google Maps</div>
@@ -329,6 +367,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/firebase-auth.js"></script>
 
     <script type="text/javascript">
         var container = document.getElementById('sliderContainer');
@@ -385,7 +429,6 @@
         }
 
         var wrapper = document.getElementById('sliderWrapper');
-        
         if (window.navigator.msPointerEnabled) {
             wrapper.addEventListener('MSPointerDown', handleStart, false);
             wrapper.addEventListener('MSPointerUp', handleEnd, false);
@@ -422,31 +465,26 @@
         function filterApps() {
             var query = searchInput.value.replace(/^\s+|\s+$/g, '').toLowerCase();
             suggestionsBox.innerHTML = '';
-
             if (query.length === 0) {
                 suggestionsBox.style.display = 'none';
                 return;
             }
-
             var matches = [];
             for (var i = 0; i < appsData.length; i++) {
                 if (appsData[i].name.toLowerCase().indexOf(query) !== -1) {
                     matches.push(appsData[i]);
                 }
             }
-
             if (matches.length > 0) {
                 for (var j = 0; j < matches.length; j++) {
                     (function(app) {
                         var item = document.createElement('a');
                         item.className = 'suggestion-item';
                         item.href = (app.url && app.url !== '#') ? app.url : 'javascript:void(0);';
-
                         item.innerHTML = 
                             '<div class="suggestion-icon" style="background-image: url(\'' + app.icon + '\');"></div>' +
                             '<div class="suggestion-title">' + app.name + '</div>' +
                             '<div class="clear"></div>';
-
                         item.onclick = function(e) {
                             if (!app.url || app.url === '#') {
                                 if (e && e.preventDefault) e.preventDefault();
@@ -454,7 +492,6 @@
                             }
                             suggestionsBox.style.display = 'none';
                         };
-
                         suggestionsBox.appendChild(item);
                     })(matches[j]);
                 }
@@ -479,6 +516,5 @@
             }
         }, false);
     </script>
-
 </body>
 </html>
