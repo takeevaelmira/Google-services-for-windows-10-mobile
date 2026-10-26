@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Google Translate - Windows 10 Mobile</title>
+    <link rel="stylesheet" href="../assets/css/auth-reviews.css">
     <style type="text/css">
         body {
             background-color: #121212;
@@ -11,6 +12,7 @@
             font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 16px;
+            position: relative;
         }
         .back-link {
             display: inline-block;
@@ -19,9 +21,9 @@
             text-decoration: none;
             font-size: 14px;
         }
-        
         .app-header {
             margin-bottom: 20px;
+            padding-right: 50px;
         }
         .app-icon-large {
             width: 72px;
@@ -49,7 +51,6 @@
         .clear {
             clear: both;
         }
-
         .download-button {
             display: block;
             width: 100%;
@@ -65,7 +66,6 @@
             margin-top: 16px;
             margin-bottom: 24px;
         }
-
         .screenshots-scroll-container {
             width: 100%;
             overflow-x: auto;
@@ -87,7 +87,6 @@
             cursor: pointer;
             object-fit: contain;
         }
-
         .modal-overlay {
             display: none;
             position: fixed;
@@ -100,8 +99,7 @@
             text-align: center;
             overflow: hidden;
         }
-
-        .modal-close-btn {
+        .modal-close-btn-img {
             position: fixed;
             top: 16px;
             left: 20px;
@@ -116,7 +114,6 @@
             line-height: 38px;
             border-radius: 50%;
         }
-
         .modal-download-btn {
             position: fixed;
             top: 16px;
@@ -134,7 +131,6 @@
             border-radius: 50%;
             display: inline-block;
         }
-
         .modal-image-wrapper {
             width: 100%;
             height: 100%;
@@ -145,7 +141,6 @@
             box-sizing: border-box;
             touch-action: pan-y pinch-zoom;
         }
-        
         .modal-image {
             max-width: 90%;
             max-height: 85vh;
@@ -158,28 +153,11 @@
             transform: translateX(0);
             opacity: 1;
         }
-
-        .slide-center {
-            transform: translateX(0) !important;
-            opacity: 1 !important;
-        }
-        .slide-left-out {
-            transform: translateX(-120%) !important;
-            opacity: 0 !important;
-        }
-        .slide-right-out {
-            transform: translateX(120%) !important;
-            opacity: 0 !important;
-        }
-        .slide-right-in {
-            transform: translateX(120%) !important;
-            opacity: 0 !important;
-        }
-        .slide-left-in {
-            transform: translateX(-120%) !important;
-            opacity: 0 !important;
-        }
-
+        .slide-center { transform: translateX(0) !important; opacity: 1 !important; }
+        .slide-left-out { transform: translateX(-120%) !important; opacity: 0 !important; }
+        .slide-right-out { transform: translateX(120%) !important; opacity: 0 !important; }
+        .slide-right-in { transform: translateX(120%) !important; opacity: 0 !important; }
+        .slide-left-in { transform: translateX(-120%) !important; opacity: 0 !important; }
         .app-desc {
             font-size: 15px;
             line-height: 1.6;
@@ -200,6 +178,58 @@
 </head>
 <body>
 
+    <!-- Кнопка входа в правом верхнем углу -->
+    <div class="user-auth-container">
+        <div id="authTriggerBtn" class="auth-icon-btn" onclick="openAuthModal()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#e8eaed">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации / профиля -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
+            <div id="loggedOutView">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
+                    <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email" required>
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль" required>
+                    <button type="submit" class="auth-submit-btn">Войти</button>
+                </form>
+                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
+                    <input type="text" id="regName" class="auth-input" placeholder="Имя" required>
+                    <input type="email" id="regEmail" class="auth-input" placeholder="Email" required>
+                    <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)" required>
+                    <button type="submit" class="auth-submit-btn">Зарегистрироваться</button>
+                </form>
+            </div>
+            <div id="loggedInView" style="display: none; text-align: center;">
+                <div id="profileAvatarBig" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
+                <h3 id="profileName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
+                <p id="profileEmail" style="color: #9aa0a6; font-size: 13px; margin: 0 0 20px 0;"></p>
+                <button class="auth-submit-btn" style="background-color: #3c4043; color: #e8eaed; margin-bottom: 10px;" onclick="closeAuthModal()">Назад</button>
+                <br>
+                <button onclick="handleLogout()" style="background: none; border: none; color: #f28b82; cursor: pointer; font-size: 14px;">Выйти из аккаунта</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно просмотра чужого профиля -->
+    <div id="userProfileModal" class="auth-modal">
+        <div class="auth-modal-content" style="text-align: center;">
+            <button class="auth-close-btn" onclick="closeUserProfileModal()">&times;</button>
+            <div id="viewAvatar" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
+            <h3 id="viewName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
+            <p id="viewEmail" style="color: #9aa0a6; font-size: 13px; margin: 0 0 20px 0;"></p>
+            <button class="auth-submit-btn" style="background-color: #3c4043; color: #e8eaed;" onclick="closeUserProfileModal()">Назад</button>
+        </div>
+    </div>
+
     <a href="./" class="back-link">&#8592; Back to app list</a>
 
     <div class="app-header">
@@ -219,9 +249,8 @@
     </div>
 
     <div id="imageModal" class="modal-overlay">
-        <span class="modal-close-btn" onclick="closeModal()">&#10005;</span>
+        <span class="modal-close-btn-img" onclick="closeModal()">&#10005;</span>
         <a id="modalDownloadLink" class="modal-download-btn" onclick="downloadCurrentImage(event)" title="Download">&#10515;</a>
-
         <div class="modal-image-wrapper" id="modalWrapper" onclick="closeModal()">
             <img id="modalImage" class="modal-image slide-center" src="" alt="Screenshot" onclick="event.stopPropagation ? event.stopPropagation() : (event.cancelBubble = true);">
         </div>
@@ -231,7 +260,7 @@
         <ul>
             <li>text translation from 10 languages</li>
             <li>camera text translation from 10 languages</li>
-            <li>microphone text translation from 10 languages (does not work on all devices)</li>
+            <li>microphone text translation from 10 languages</li>
             <li>copying translation</li>
             <li>text-to-speech translation in 10 languages</li>
             <li>auto language detection</li>
@@ -241,21 +270,52 @@
             <li>improved settings interface</li>
             <li>in settings:
                 <ul>
-                    <li>general: Automatically speak translation, translate on the fly while typing text</li>
+                    <li>general: Automatically speak translation, translate on the fly</li>
                     <li>personalization: Language, theme</li>
-                    <li>advanced: Custom Groq API key for microphone (can be left default)</li>
+                    <li>advanced: Custom Groq API key</li>
                     <li>about: Name, version, developer</li>
                 </ul>
             </li>
         </ul>
     </div>
 
+    <!-- Блок отзывов в самом низу -->
+    <div class="reviews-section">
+        <h3 style="color: #8ab4f8; margin-bottom: 16px;">Отзывы</h3>
+        <div id="reviewsList"></div>
+        <div id="addReviewContainer" class="add-review-box" style="display: none;">
+            <h4 style="margin: 0 0 10px 0; font-size: 15px;">Оставить отзыв</h4>
+            <form onsubmit="submitReview(event)">
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; color: #9aa0a6; display: block; margin-bottom: 4px;">Оценка (звёзд):</label>
+                    <select id="reviewRating" class="auth-input" style="margin-bottom: 0;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                </div>
+                <textarea id="reviewComment" class="auth-input" placeholder="Ваш комментарий..." rows="3" required style="resize: none;"></textarea>
+                <button type="submit" class="auth-submit-btn">Отправить отзыв</button>
+            </form>
+        </div>
+        <div id="loginRequiredMsg" style="text-align: center; color: #9aa0a6; font-size: 14px; padding: 12px; background-color: #202124; border-radius: 12px; border: 1px solid #3c4043;">
+            Чтобы писать отзывы, <a href="javascript:void(0)" onclick="openAuthModal()" style="color: #8ab4f8;">войдите в аккаунт</a>.
+        </div>
+    </div>
+
+    <!-- Firebase Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/firebase-auth.js"></script>
+
     <script type="text/javascript">
         var screenshots = [
             'https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google-translate-screenshot-1.jpg',
             'https://raw.githubusercontent.com/takeevaelmira/Google-services-for-windows-10-mobile/refs/heads/main/Google-translate-screenshot-2.jpg'
         ];
-        
         var currentModalIndex = 0;
         var isAnimating = false;
         var modal = document.getElementById('imageModal');
@@ -275,31 +335,23 @@
         function swipeToSlide(direction) {
             if (isAnimating) return;
             isAnimating = true;
-
             var nextIndex = currentModalIndex + direction;
-            if (nextIndex >= screenshots.length) {
-                nextIndex = 0;
-            } else if (nextIndex < 0) {
-                nextIndex = screenshots.length - 1;
-            }
+            if (nextIndex >= screenshots.length) nextIndex = 0;
+            else if (nextIndex < 0) nextIndex = screenshots.length - 1;
 
             var exitClass = direction > 0 ? 'modal-image slide-left-out' : 'modal-image slide-right-out';
             var enterClass = direction > 0 ? 'modal-image slide-right-in' : 'modal-image slide-left-in';
 
             modalImg.className = exitClass;
-
             setTimeout(function() {
                 currentModalIndex = nextIndex;
                 modalImg.style.transition = 'none';
                 modalImg.src = screenshots[currentModalIndex];
                 modalImg.className = enterClass;
-
                 setTimeout(function() {
                     modalImg.style.transition = 'transform 0.25s ease-in-out, opacity 0.25s ease-in-out';
                     modalImg.className = 'modal-image slide-center';
-                    setTimeout(function() {
-                        isAnimating = false;
-                    }, 250);
+                    setTimeout(function() { isAnimating = false; }, 250);
                 }, 20);
             }, 250);
         }
@@ -308,11 +360,8 @@
             if (e) e.stopPropagation();
             var url = screenshots[currentModalIndex];
             var filename = 'google-translate-screenshot-' + (currentModalIndex + 1) + '.jpg';
-
             fetch(url)
-                .then(function(response) {
-                    return response.blob();
-                })
+                .then(function(response) { return response.blob(); })
                 .then(function(blob) {
                     var link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
@@ -321,49 +370,33 @@
                     link.click();
                     document.body.removeChild(link);
                 })
-                .catch(function() {
-                    window.open(url, '_blank');
-                });
+                .catch(function() { window.open(url, '_blank'); });
         }
 
         document.onkeydown = function(e) {
             e = e || window.event;
             if (modal.style.display === 'block') {
-                if (e.keyCode === 27) {
-                    closeModal();
-                } else if (e.keyCode === 37) {
-                    swipeToSlide(-1);
-                } else if (e.keyCode === 39) {
-                    swipeToSlide(1);
-                }
+                if (e.keyCode === 27) closeModal();
+                else if (e.keyCode === 37) swipeToSlide(-1);
+                else if (e.keyCode === 39) swipeToSlide(1);
             }
         };
 
         var startX = 0;
-
-        function handleStart(e) {
-            startX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || 0);
-        }
-
+        function handleStart(e) { startX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || 0); }
         function handleEnd(e) {
             var endX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || 0);
             var diff = startX - endX;
-
             if (Math.abs(diff) > 35) {
-                if (diff > 0) {
-                    swipeToSlide(1);
-                } else {
-                    swipeToSlide(-1);
-                }
+                if (diff > 0) swipeToSlide(1);
+                else swipeToSlide(-1);
             }
         }
-
         var wrapper = document.getElementById('modalWrapper');
         wrapper.ontouchstart = handleStart;
         wrapper.ontouchend = handleEnd;
         wrapper.onmousedown = handleStart;
         wrapper.onmouseup = handleEnd;
     </script>
-
 </body>
 </html>
