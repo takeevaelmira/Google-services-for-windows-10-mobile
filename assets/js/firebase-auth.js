@@ -1,12 +1,12 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCp9X7TVqDvPDV3k0Lq99rmdgOHVnydfRo",
-  authDomain: "services-6da77.firebaseapp.com",
-  projectId: "services-6da77",
-  storageBucket: "services-6da77.firebasestorage.app",
-  messagingSenderId: "270869443470",
-  appId: "1:270869443470:web:ecdcdb68abc38586e0eadf",
-  measurementId: "G-MFTCVNR56D"
+// Конфигурация Firebase
+var firebaseConfig = {
+    apiKey: "AIzaSyCp9X7TVqDvPDV3k0Lq99rmdgOHVnydfRo",
+    authDomain: "services-6da77.firebaseapp.com",
+    projectId: "services-6da77",
+    storageBucket: "services-6da77.firebasestorage.app",
+    messagingSenderId: "270869443470",
+    appId: "1:270869443470:web:ecdcdb68abc38586e0eadf",
+    measurementId: "G-MFTCVNR56D"
 };
 
 // Инициализация Firebase
@@ -37,11 +37,13 @@ function switchAuthTab(tab) {
 }
 
 function openAuthModal() {
-    document.getElementById('authModal').style.display = 'flex';
+    var modal = document.getElementById('authModal');
+    if (modal) modal.style.display = 'flex';
 }
 
 function closeAuthModal() {
-    document.getElementById('authModal').style.display = 'none';
+    var modal = document.getElementById('authModal');
+    if (modal) modal.style.display = 'none';
 }
 
 // Отслеживание состояния авторизации
@@ -52,6 +54,8 @@ auth.onAuthStateChanged(function(user) {
     var addReviewContainer = document.getElementById('addReviewContainer');
     var loginRequiredMsg = document.getElementById('loginRequiredMsg');
 
+    if (!triggerBtn) return;
+
     if (user) {
         var name = user.displayName || user.email.split('@')[0];
         var firstLetter = name.charAt(0).toUpperCase();
@@ -59,76 +63,101 @@ auth.onAuthStateChanged(function(user) {
         triggerBtn.className = 'auth-icon-btn logged-in';
         triggerBtn.innerHTML = firstLetter;
 
-        document.getElementById('profileAvatarBig').innerHTML = firstLetter;
-        document.getElementById('profileName').innerHTML = name;
-        document.getElementById('profileEmail').innerHTML = user.email;
+        var pAvatar = document.getElementById('profileAvatarBig');
+        var pName = document.getElementById('profileName');
+        var pEmail = document.getElementById('profileEmail');
 
-        loggedOutView.style.display = 'none';
-        loggedInView.style.display = 'block';
+        if (pAvatar) pAvatar.innerHTML = firstLetter;
+        if (pName) pName.innerHTML = name;
+        if (pEmail) pEmail.innerHTML = user.email;
 
+        if (loggedOutView) loggedOutView.style.display = 'none';
+        if (loggedInView) loggedInView.style.display = 'block';
         if (addReviewContainer) addReviewContainer.style.display = 'block';
         if (loginRequiredMsg) loginRequiredMsg.style.display = 'none';
     } else {
         triggerBtn.className = 'auth-icon-btn';
         triggerBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#e8eaed"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
 
-        loggedOutView.style.display = 'block';
-        loggedInView.style.display = 'none';
-
+        if (loggedOutView) loggedOutView.style.display = 'block';
+        if (loggedInView) loggedInView.style.display = 'none';
         if (addReviewContainer) addReviewContainer.style.display = 'none';
         if (loginRequiredMsg) loginRequiredMsg.style.display = 'block';
     }
 });
 
-// Регистрация
+// Регистрация (адаптировано для старого Edge)
 function handleRegister(e) {
-    e.preventDefault();
-    var name = document.getElementById('regName').value;
-    var email = document.getElementById('regEmail').value;
-    var password = document.getElementById('regPassword').value;
+    if (e && e.preventDefault) e.preventDefault();
+    var nameInput = document.getElementById('regName');
+    var emailInput = document.getElementById('regEmail');
+    var passwordInput = document.getElementById('regPassword');
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(function(credential) {
-            return credential.user.updateProfile({ displayName: name });
-        })
-        .then(function() {
+    if (!emailInput || !passwordInput) return;
+
+    var name = nameInput.value;
+    var email = emailInput.value;
+    var password = passwordInput.value;
+
+    auth.createUserWithEmailAndPassword(email, password).then(function(credential) {
+        if (credential && credential.user) {
+            credential.user.updateProfile({ displayName: name }).then(function() {
+                closeAuthModal();
+            }).catch(function() {
+                closeAuthModal();
+            });
+        } else {
             closeAuthModal();
-        })
-        .catch(function(error) {
-            alert('Ошибка регистрации: ' + error.message);
-        });
+        }
+    }).catch(function(error) {
+        alert('Ошибка регистрации: ' + (error.message || error));
+    });
+    return false;
 }
 
-// Вход
+// Вход (адаптировано для старого Edge)
 function handleLogin(e) {
-    e.preventDefault();
-    var email = document.getElementById('loginEmail').value;
-    var password = document.getElementById('loginPassword').value;
+    if (e && e.preventDefault) e.preventDefault();
+    var emailInput = document.getElementById('loginEmail');
+    var passwordInput = document.getElementById('loginPassword');
 
-    auth.signInWithEmailAndPassword(email, password)
-        .then(function() {
-            closeAuthModal();
-        })
-        .catch(function(error) {
-            alert('Ошибка входа: ' + error.message);
-        });
+    if (!emailInput || !passwordInput) return;
+
+    var email = emailInput.value;
+    var password = passwordInput.value;
+
+    auth.signInWithEmailAndPassword(email, password).then(function() {
+        closeAuthModal();
+    }).catch(function(error) {
+        alert('Ошибка входа: ' + (error.message || error));
+    });
+    return false;
 }
 
 // Выход
 function handleLogout() {
     auth.signOut().then(function() {
         closeAuthModal();
+    }).catch(function(error) {
+        alert('Ошибка выхода: ' + (error.message || error));
     });
 }
 
 // Отправка отзыва в Firestore
 function submitReview(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     var user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+        alert('Пожалуйста, войдите в аккаунт');
+        return false;
+    }
 
-    var rating = parseInt(document.getElementById('reviewRating').value);
-    var comment = document.getElementById('reviewComment').value;
+    var ratingSelect = document.getElementById('reviewRating');
+    var commentInput = document.getElementById('reviewComment');
+    if (!ratingSelect || !commentInput) return false;
+
+    var rating = parseInt(ratingSelect.value, 10);
+    var comment = commentInput.value;
     var name = user.displayName || user.email.split('@')[0];
 
     db.collection('reviews').add({
@@ -139,11 +168,12 @@ function submitReview(e) {
         comment: comment,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     }).then(function() {
-        document.getElementById('reviewComment').value = '';
+        commentInput.value = '';
         loadReviews();
     }).catch(function(error) {
-        alert('Ошибка отправки: ' + error.message);
+        alert('Ошибка отправки отзыва: ' + (error.message || error));
     });
+    return false;
 }
 
 // Загрузка отзывов из Firestore
@@ -153,56 +183,69 @@ function loadReviews() {
     
     listContainer.innerHTML = 'Загрузка отзывов...';
 
-    db.collection('reviews').orderBy('createdAt', 'desc').get()
-        .then(function(querySnapshot) {
-            listContainer.innerHTML = '';
-            if (querySnapshot.empty) {
-                listContainer.innerHTML = '<p style="color: #9aa0a6; font-size: 14px;">Пока нет отзывов. Станьте первым!</p>';
-                return;
+    db.collection('reviews').orderBy('createdAt', 'desc').get().then(function(querySnapshot) {
+        listContainer.innerHTML = '';
+        if (querySnapshot.empty) {
+            listContainer.innerHTML = '<p style="color: #9aa0a6; font-size: 14px;">Пока нет отзывов. Станьте первым!</p>';
+            return;
+        }
+
+        querySnapshot.forEach(function(doc) {
+            var data = doc.data();
+            var name = data.userName || 'Аноним';
+            var firstLetter = name.charAt(0).toUpperCase();
+            
+            var starsCount = data.rating || 5;
+            var stars = '';
+            for (var i = 0; i < starsCount; i++) {
+                stars += '⭐';
             }
 
-            querySnapshot.forEach(function(doc) {
-                var data = doc.data();
-                var name = data.userName || 'Аноним';
-                var firstLetter = name.charAt(0).toUpperCase();
-                var stars = '⭐'.repeat(data.rating || 5);
-
-                var item = document.createElement('div');
-                item.className = 'review-item';
-                item.innerHTML = 
-                    '<div class="review-header">' +
-                        '<div class="review-avatar">' + firstLetter + '</div>' +
-                        '<div class="review-author" onclick="openUserProfile(\'' + data.userName + '\', \'' + data.userEmail + '\')">' + name + '</div>' +
-                        '<div class="review-stars">' + stars + '</div>' +
-                    '</div>' +
-                    '<p class="review-text">' + escapeHtml(data.comment) + '</p>';
-                listContainer.appendChild(item);
-            });
-        })
-        .catch(function(error) {
-            listContainer.innerHTML = '<p style="color: #f28b82;">Ошибка загрузки отзывов.</p>';
+            var item = document.createElement('div');
+            item.className = 'review-item';
+            item.innerHTML = 
+                '<div class="review-header">' +
+                    '<div class="review-avatar">' + firstLetter + '</div>' +
+                    '<div class="review-author" onclick="openUserProfile(\'' + encodeURIComponent(data.userName) + '\', \'' + encodeURIComponent(data.userEmail) + '\')">' + escapeHtml(name) + '</div>' +
+                    '<div class="review-stars">' + stars + '</div>' +
+                '</div>' +
+                '<p class="review-text">' + escapeHtml(data.comment || '') + '</p>';
+            listContainer.appendChild(item);
         });
+    }).catch(function(error) {
+        listContainer.innerHTML = '<p style="color: #f28b82;">Не удалось загрузить отзывы.</p>';
+    });
 }
 
 // Просмотр профиля другого пользователя
-function openUserProfile(name, email) {
+function openUserProfile(encName, encEmail) {
+    var name = decodeURIComponent(encName);
+    var email = decodeURIComponent(encEmail);
     var firstLetter = name.charAt(0).toUpperCase();
-    document.getElementById('viewAvatar').innerHTML = firstLetter;
-    document.getElementById('viewName').innerHTML = name;
-    document.getElementById('viewEmail').innerHTML = email;
-    document.getElementById('userProfileModal').style.display = 'flex';
+
+    var vAvatar = document.getElementById('viewAvatar');
+    var vName = document.getElementById('viewName');
+    var vEmail = document.getElementById('viewEmail');
+    var vModal = document.getElementById('userProfileModal');
+
+    if (vAvatar) vAvatar.innerHTML = firstLetter;
+    if (vName) vName.innerHTML = escapeHtml(name);
+    if (vEmail) vEmail.innerHTML = escapeHtml(email);
+    if (vModal) vModal.style.display = 'flex';
 }
 
 function closeUserProfileModal() {
-    document.getElementById('userProfileModal').style.display = 'none';
+    var vModal = document.getElementById('userProfileModal');
+    if (vModal) vModal.style.display = 'none';
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-// Загружаем отзывы при загрузке страницы
+// Автозагрузка при старте страницы
 window.onload = function() {
     if (typeof originalWindowOnload === 'function') {
         originalWindowOnload();
