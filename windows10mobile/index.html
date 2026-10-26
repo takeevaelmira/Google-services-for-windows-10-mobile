@@ -266,22 +266,26 @@
         <div class="auth-modal-content">
             <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
             <div id="loggedOutView">
-                <div class="auth-tabs">
-                    <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
-                    <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
-                </div>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email" required>
-                    <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль" required>
-                    <button type="submit" class="auth-submit-btn">Войти</button>
-                </form>
-                <form id="registerForm" onsubmit="handleRegister(event)" style="display: none;">
-                    <input type="text" id="regName" class="auth-input" placeholder="Имя" required>
-                    <input type="email" id="regEmail" class="auth-input" placeholder="Email" required>
-                    <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)" required>
-                    <button type="submit" class="auth-submit-btn">Зарегистрироваться</button>
-                </form>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
+                <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
             </div>
+            
+            <!-- Форма входа без onsubmit -->
+            <div id="loginForm">
+                <input type="email" id="loginEmail" class="auth-input" placeholder="Email">
+                <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
+                <button type="button" class="auth-submit-btn" onclick="handleLoginClick()">Войти</button>
+            </div>
+
+            <!-- Форма регистрации без onsubmit -->
+            <div id="registerForm" style="display: none;">
+                <input type="text" id="regName" class="auth-input" placeholder="Имя">
+                <input type="email" id="regEmail" class="auth-input" placeholder="Email">
+                <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)">
+                <button type="button" class="auth-submit-btn" onclick="handleRegisterClick()">Зарегистрироваться</button>
+            </div>
+        </div>
             <div id="loggedInView" style="display: none; text-align: center;">
                 <div id="profileAvatarBig" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
                 <h3 id="profileName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
