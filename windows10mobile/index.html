@@ -521,6 +521,9 @@
                 suggestionsBox.style.display = 'none';
             }
         }, false);
+        window.onerror = function(msg, url, line) {
+    alert("JS Error: " + msg + " (line " + line + ")");
+};
     </script>
 </body>
 </html>
