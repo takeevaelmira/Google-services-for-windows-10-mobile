@@ -1,8 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://w3.org">
 <html lang="en">
 <head>
-    <!-- Полифил для поддержки Promises в старых браузерах (EdgeHTML) -->
-<script src="https://cdn.jsdelivr.com/npm/promise-polyfill@8/dist/polyfill.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Google Drive - Windows 10 Mobile</title>
@@ -16,162 +14,29 @@
             padding: 16px;
             position: relative;
         }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #8ab4f8;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .app-header {
-            margin-bottom: 20px;
-            padding-right: 50px;
-        }
-        .app-icon-large {
-            width: 72px;
-            height: 72px;
-            border-radius: 16px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            float: left;
-            margin-right: 16px;
-        }
-        .app-title-group {
-            padding-top: 8px;
-        }
-        .app-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #e8eaed;
-            margin: 0 0 4px 0;
-        }
-        .app-version {
-            font-size: 13px;
-            color: #9aa0a6;
-        }
-        .clear {
-            clear: both;
-        }
-        .download-button {
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            background-color: #8ab4f8;
-            color: #202124;
-            font-weight: 600;
-            padding: 14px;
-            border-radius: 28px;
-            text-decoration: none;
-            font-size: 16px;
-            margin-top: 16px;
-            margin-bottom: 24px;
-        }
-        .screenshots-scroll-container {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            margin-bottom: 24px;
-            padding-bottom: 8px;
-        }
-        .screenshot-item {
-            display: inline-block;
-            width: auto;
-            max-width: 200px;
-            height: auto;
-            max-height: 350px;
-            margin-right: 12px;
-            vertical-align: top;
-            border-radius: 12px;
-            border: 1px solid #3c4043;
-            cursor: pointer;
-            object-fit: contain;
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-            text-align: center;
-            overflow: hidden;
-        }
-        .modal-close-btn-img {
-            position: fixed;
-            top: 16px;
-            left: 20px;
-            z-index: 10001;
-            color: #ffffff;
-            font-size: 24px;
-            cursor: pointer;
-            user-select: none;
-            background: rgba(0,0,0,0.6);
-            width: 40px;
-            height: 40px;
-            line-height: 38px;
-            border-radius: 50%;
-        }
-        .modal-download-btn {
-            position: fixed;
-            top: 16px;
-            right: 20px;
-            z-index: 10001;
-            color: #ffffff;
-            font-size: 22px;
-            text-decoration: none;
-            cursor: pointer;
-            user-select: none;
-            background: rgba(0,0,0,0.6);
-            width: 40px;
-            height: 40px;
-            line-height: 38px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .modal-image-wrapper {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-sizing: border-box;
-            touch-action: pan-y pinch-zoom;
-        }
-        .modal-image {
-            max-width: 90%;
-            max-height: 85vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 8px;
-            position: absolute;
-            transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out;
-            transform: translateX(0);
-            opacity: 1;
-        }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #8ab4f8; text-decoration: none; font-size: 14px; }
+        .app-header { margin-bottom: 20px; padding-right: 50px; }
+        .app-icon-large { width: 72px; height: 72px; border-radius: 16px; background-position: center; background-repeat: no-repeat; background-size: contain; float: left; margin-right: 16px; }
+        .app-title-group { padding-top: 8px; }
+        .app-title { font-size: 22px; font-weight: 600; color: #e8eaed; margin: 0 0 4px 0; }
+        .app-version { font-size: 13px; color: #9aa0a6; }
+        .clear { clear: both; }
+        .download-button { display: block; width: 100%; box-sizing: border-box; text-align: center; background-color: #8ab4f8; color: #202124; font-weight: 600; padding: 14px; border-radius: 28px; text-decoration: none; font-size: 16px; margin-top: 16px; margin-bottom: 24px; }
+        .screenshots-scroll-container { width: 100%; overflow-x: auto; overflow-y: hidden; white-space: nowrap; margin-bottom: 24px; padding-bottom: 8px; }
+        .screenshot-item { display: inline-block; width: auto; max-width: 200px; height: auto; max-height: 350px; margin-right: 12px; vertical-align: top; border-radius: 12px; border: 1px solid #3c4043; cursor: pointer; object-fit: contain; }
+        .modal-overlay { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); text-align: center; overflow: hidden; }
+        .modal-close-btn-img { position: fixed; top: 16px; left: 20px; z-index: 10001; color: #ffffff; font-size: 24px; cursor: pointer; user-select: none; background: rgba(0,0,0,0.6); width: 40px; height: 40px; line-height: 38px; border-radius: 50%; }
+        .modal-download-btn { position: fixed; top: 16px; right: 20px; z-index: 10001; color: #ffffff; font-size: 22px; text-decoration: none; cursor: pointer; user-select: none; background: rgba(0,0,0,0.6); width: 40px; height: 40px; line-height: 38px; border-radius: 50%; display: inline-block; }
+        .modal-image-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; box-sizing: border-box; touch-action: pan-y pinch-zoom; }
+        .modal-image { max-width: 90%; max-height: 85vh; width: auto; height: auto; object-fit: contain; border-radius: 8px; position: absolute; transition: transform 0.25s ease-in-out, opacity 0.25s ease-in-out; transform: translateX(0); opacity: 1; }
         .slide-center { transform: translateX(0) !important; opacity: 1 !important; }
         .slide-left-out { transform: translateX(-120%) !important; opacity: 0 !important; }
         .slide-right-out { transform: translateX(120%) !important; opacity: 0 !important; }
         .slide-right-in { transform: translateX(120%) !important; opacity: 0 !important; }
         .slide-left-in { transform: translateX(-120%) !important; opacity: 0 !important; }
-        .app-desc {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #e8eaed;
-        }
-        .app-desc ul {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-        .app-desc li {
-            margin-bottom: 6px;
-        }
+        .app-desc { font-size: 15px; line-height: 1.6; color: #e8eaed; }
+        .app-desc ul { margin: 8px 0; padding-left: 20px; }
+        .app-desc li { margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -190,26 +55,22 @@
         <div class="auth-modal-content">
             <button class="auth-close-btn" onclick="closeAuthModal()">&times;</button>
             <div id="loggedOutView">
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
-                <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Вход</div>
+                    <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
+                </div>
+                <div id="loginForm">
+                    <input type="email" id="loginEmail" class="auth-input" placeholder="Email">
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
+                    <button type="button" class="auth-submit-btn" onclick="handleLoginClick()">Войти</button>
+                </div>
+                <div id="registerForm" style="display: none;">
+                    <input type="text" id="regName" class="auth-input" placeholder="Имя">
+                    <input type="email" id="regEmail" class="auth-input" placeholder="Email">
+                    <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)">
+                    <button type="button" class="auth-submit-btn" onclick="handleRegisterClick()">Зарегистрироваться</button>
+                </div>
             </div>
-            
-            <!-- Форма входа без onsubmit -->
-            <div id="loginForm">
-                <input type="email" id="loginEmail" class="auth-input" placeholder="Email">
-                <input type="password" id="loginPassword" class="auth-input" placeholder="Пароль">
-                <button type="button" class="auth-submit-btn" onclick="handleLoginClick()">Войти</button>
-            </div>
-
-            <!-- Форма регистрации без onsubmit -->
-            <div id="registerForm" style="display: none;">
-                <input type="text" id="regName" class="auth-input" placeholder="Имя">
-                <input type="email" id="regEmail" class="auth-input" placeholder="Email">
-                <input type="password" id="regPassword" class="auth-input" placeholder="Пароль (мин. 6 символов)">
-                <button type="button" class="auth-submit-btn" onclick="handleRegisterClick()">Зарегистрироваться</button>
-            </div>
-        </div>
             <div id="loggedInView" style="display: none; text-align: center;">
                 <div id="profileAvatarBig" class="auth-icon-btn logged-in" style="width: 72px; height: 72px; margin: 0 auto 12px auto; font-size: 28px;"></div>
                 <h3 id="profileName" style="margin: 0 0 4px 0; color: #8ab4f8;"></h3>
@@ -277,31 +138,31 @@
         <h3 style="color: #8ab4f8; margin-bottom: 16px;">Отзывы</h3>
         <div id="reviewsList"></div>
         <div id="addReviewContainer" class="add-review-box" style="display: none;">
-        <h4 style="margin: 0 0 10px 0; font-size: 15px;">Оставить отзыв</h4>
-        <div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 13px; color: #9aa0a6; display: block; margin-bottom: 4px;">Оценка (звёзд):</label>
-                <select id="reviewRating" class="auth-input" style="margin-bottom: 0;">
-                    <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                    <option value="4">⭐⭐⭐⭐ (4)</option>
-                    <option value="3">⭐⭐⭐ (3)</option>
-                    <option value="2">⭐⭐ (2)</option>
-                    <option value="1">⭐ (1)</option>
-                </select>
+            <h4 style="margin: 0 0 10px 0; font-size: 15px;">Оставить отзыв</h4>
+            <div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 13px; color: #9aa0a6; display: block; margin-bottom: 4px;">Оценка (звёзд):</label>
+                    <select id="reviewRating" class="auth-input" style="margin-bottom: 0;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                    </select>
+                </div>
+                <textarea id="reviewComment" class="auth-input" placeholder="Ваш комментарий..." rows="3" style="resize: none;"></textarea>
+                <button type="button" class="auth-submit-btn" onclick="submitReviewClick()">Отправить отзыв</button>
             </div>
-            <textarea id="reviewComment" class="auth-input" placeholder="Ваш комментарий..." rows="3" style="resize: none;"></textarea>
-            <button type="button" class="auth-submit-btn" onclick="submitReviewClick()">Отправить отзыв</button>
         </div>
-    </div>
         <div id="loginRequiredMsg" style="text-align: center; color: #9aa0a6; font-size: 14px; padding: 12px; background-color: #202124; border-radius: 12px; border: 1px solid #3c4043;">
             Чтобы писать отзывы, <a href="javascript:void(0)" onclick="openAuthModal()" style="color: #8ab4f8;">войдите в аккаунт</a>.
         </div>
     </div>
 
-    <!-- Firebase Compat SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase v8 Compat SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="../assets/js/firebase-auth.js"></script>
 
     <script type="text/javascript">
@@ -321,9 +182,7 @@
             modal.style.display = 'block';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-        }
+        function closeModal() { modal.style.display = 'none'; }
 
         function swipeToSlide(direction) {
             if (isAnimating) return;
@@ -365,31 +224,6 @@
                 })
                 .catch(function() { window.open(url, '_blank'); });
         }
-
-        document.onkeydown = function(e) {
-            e = e || window.event;
-            if (modal.style.display === 'block') {
-                if (e.keyCode === 27) closeModal();
-                else if (e.keyCode === 37) swipeToSlide(-1);
-                else if (e.keyCode === 39) swipeToSlide(1);
-            }
-        };
-
-        var startX = 0;
-        function handleStart(e) { startX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || 0); }
-        function handleEnd(e) {
-            var endX = e.changedTouches ? e.changedTouches[0].clientX : (e.clientX || 0);
-            var diff = startX - endX;
-            if (Math.abs(diff) > 35) {
-                if (diff > 0) swipeToSlide(1);
-                else swipeToSlide(-1);
-            }
-        }
-        var wrapper = document.getElementById('modalWrapper');
-        wrapper.ontouchstart = handleStart;
-        wrapper.ontouchend = handleEnd;
-        wrapper.onmousedown = handleStart;
-        wrapper.onmouseup = handleEnd;
     </script>
 </body>
 </html>
