@@ -9,11 +9,28 @@ var firebaseConfig = {
     measurementId: "G-MFTCVNR56D"
 };
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// Безопасная инициализация
+try {
+    if (window.firebase && !window.firebase.apps.length) {
+        window.firebase.initializeApp(firebaseConfig);
+    }
+} catch (e) {
+    alert("Firebase Init Error: " + (e.message || e));
 }
-var auth = firebase.auth();
-var db = firebase.firestore();
+
+function getAuth() {
+    if (window.firebase && typeof window.firebase.auth === 'function') {
+        return window.firebase.auth();
+    }
+    return null;
+}
+
+function getDb() {
+    if (window.firebase && typeof window.firebase.firestore === 'function') {
+        return window.firebase.firestore();
+    }
+    return null;
+}
 
 function switchAuthTab(tab) {
     var loginForm = document.getElementById('loginForm');
@@ -46,7 +63,17 @@ function closeAuthModal() {
     if (modal) modal.style.display = 'none';
 }
 
-auth.onAuthStateChanged(function(user) {
+// Отслеживание состояния авторизации с задержкой для старого Edge
+setTimeout(function() {
+    var auth = getAuth();
+    if (auth && typeof auth.onAuthStateChanged === 'function') {
+        auth.onAuthStateChanged(function(user) {
+            updateAuthUI(user);
+        });
+    }
+}, 500);
+
+function updateAuthUI(user) {
     var triggerBtn = document.getElementById('authTriggerBtn');
     var loggedOutView = document.getElementById('loggedOutView');
     var loggedInView = document.getElementById('loggedInView');
@@ -83,10 +110,16 @@ auth.onAuthStateChanged(function(user) {
         if (addReviewContainer) addReviewContainer.style.display = 'none';
         if (loginRequiredMsg) loginRequiredMsg.style.display = 'block';
     }
-});
+}
 
-// Регистрация без использования объекта event
+// Регистрация
 function handleRegisterClick() {
+    var auth = getAuth();
+    if (!auth) {
+        alert("Ошибка: Firebase Auth не загрузился.");
+        return;
+    }
+
     var nameInput = document.getElementById('regName');
     var emailInput = document.getElementById('regEmail');
     var passwordInput = document.getElementById('regPassword');
@@ -117,8 +150,14 @@ function handleRegisterClick() {
     });
 }
 
-// Вход без использования объекта event
+// Вход
 function handleLoginClick() {
+    var auth = getAuth();
+    if (!auth) {
+        alert("Ошибка: Firebase Auth не загрузился.");
+        return;
+    }
+
     var emailInput = document.getElementById('loginEmail');
     var passwordInput = document.getElementById('loginPassword');
 
@@ -140,6 +179,9 @@ function handleLoginClick() {
 }
 
 function handleLogout() {
+    var auth = getAuth();
+    if (!auth) return;
+
     auth.signOut().then(function() {
         closeAuthModal();
     }).catch(function(error) {
@@ -149,6 +191,13 @@ function handleLogout() {
 
 // Отправка отзыва
 function submitReviewClick() {
+    var auth = getAuth();
+    var db = getDb();
+    if (!auth || !db) {
+        alert("Ошибка: Firebase не инициализирован.");
+        return;
+    }
+
     var user = auth.currentUser;
     if (!user) {
         alert('Пожалуйста, войдите в аккаунт');
@@ -175,7 +224,7 @@ function submitReviewClick() {
         userEmail: user.email,
         rating: rating,
         comment: comment,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        createdAt: window.firebase.firestore.FieldValue.serverTimestamp()
     }).then(function() {
         commentInput.value = '';
         loadReviews();
@@ -184,11 +233,18 @@ function submitReviewClick() {
     });
 }
 
+// Загрузка отзывов
 function loadReviews() {
     var listContainer = document.getElementById('reviewsList');
     if (!listContainer) return;
     
-    listContainer.innerHTML = 'Загрузка отзывов...';
+    listContainer.innerHTML = '<p style="color: #9aa0a6; font-size: 14px;">Загрузка отзывов...</p>';
+
+    var db = getDb();
+    if (!db) {
+        listContainer.innerHTML = '<p style="color: #f28b82;">Ошибка: Firestore не доступен.</p>';
+        return;
+    }
 
     db.collection('reviews').orderBy('createdAt', 'desc').get().then(function(querySnapshot) {
         listContainer.innerHTML = '';
@@ -213,14 +269,14 @@ function loadReviews() {
             item.innerHTML = 
                 '<div class="review-header">' +
                     '<div class="review-avatar">' + firstLetter + '</div>' +
-                    '<div class="review-author" onclick="openUserProfile(\'' + encodeURIComponent(data.userName) + '\', \'' + encodeURIComponent(data.userEmail) + '\')">' + escapeHtml(name) + '</div>' +
+                    '<div class="review-author" onclick="openUserProfile(\'' + encodeURIComponent(data.userName || '') + '\', \'' + encodeURIComponent(data.userEmail || '') + '\')">' + escapeHtml(name) + '</div>' +
                     '<div class="review-stars">' + stars + '</div>' +
                 '</div>' +
                 '<p class="review-text">' + escapeHtml(data.comment || '') + '</p>';
             listContainer.appendChild(item);
         });
     }).catch(function(error) {
-        listContainer.innerHTML = '<p style="color: #f28b82;">Не удалось загрузить отзывы.</p>';
+        listContainer.innerHTML = '<p style="color: #f28b82;">Не удалось загрузить отзывы: ' + (error.message || error) + '</p>';
     });
 }
 
