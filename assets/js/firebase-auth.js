@@ -1,11 +1,12 @@
-// Конфигурация Firebase (замените на данные вашего проекта из консоли Firebase)
-var firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCp9X7TVqDvPDV3k0Lq99rmdgOHVnydfRo",
+  authDomain: "services-6da77.firebaseapp.com",
+  projectId: "services-6da77",
+  storageBucket: "services-6da77.firebasestorage.app",
+  messagingSenderId: "270869443470",
+  appId: "1:270869443470:web:ecdcdb68abc38586e0eadf",
+  measurementId: "G-MFTCVNR56D"
 };
 
 // Инициализация Firebase
